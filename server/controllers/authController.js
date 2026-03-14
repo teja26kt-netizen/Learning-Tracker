@@ -78,41 +78,40 @@ const googleLogin = asyncHandler(async (req, res) => {
         throw new Error('No Google credential provided');
     }
 
-    // Verify the JWT credential from Google
-    const ticket = await client.verifyIdToken({
-        idToken: credential,
-        audience: process.env.GOOGLE_CLIENT_ID,  
-        // In a real application, ensure GOOGLE_CLIENT_ID matches what the frontend is using.
-        // It provides flexibility to have multiple audiences if you have Android/iOS apps as well.
-    });
-    
-    const payload = ticket.getPayload();
-    const { sub: googleId, email, name, picture } = payload;
-
-    // Check if user exists
-    let user = await User.findOne({ email });
-
-    if (!user) {
-        // Create new user for first-time Google login
-        user = await User.create({
-            name,
-            email,
-            password: '', // No password for Google auth users
-            googleId,
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID,
         });
-    } else if (!user.googleId) {
-        // User exists with email/password, link Google ID
-        user.googleId = googleId;
-        await user.save();
-    }
 
-    res.json({
-        _id: user.id,
-        name: user.name,
-        email: user.email,
-        picture: picture, // Send profile picture (useful for frontend UI though not saved in DB here)
-        token: generateToken(user._id),
-    });
+        const payload = ticket.getPayload();
+        const { sub: googleId, email, name, picture } = payload;
+
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            user = await User.create({
+                name,
+                email,
+                password: '',
+                googleId,
+            });
+        } else if (!user.googleId) {
+            user.googleId = googleId;
+            await user.save();
+        }
+
+        res.json({
+            _id: user.id,
+            name: user.name,
+            email: user.email,
+            picture: picture,
+            token: generateToken(user._id),
+        });
+    } catch (err) {
+        res.status(401);
+        throw new Error('Google authentication failed: ' + err.message);
+    }
 });
 
 // @desc    Logout user / clear cookie if HTTP-only approach

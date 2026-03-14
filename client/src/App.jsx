@@ -57,6 +57,21 @@ const DashboardLayout = ({ children }) => {
   );
 };
 
+// Define all dashboard routes in a separate array or component to keep App clean
+const dashboardRoutes = [
+  { path: "/dashboard", element: <Dashboard /> },
+  { path: "/courses", element: <CourseCatalog /> },
+  { path: "/roadmap/:id", element: <CourseRoadmap /> },
+  { path: "/roadmap/:courseId/:stepIdx", element: <CourseDetail /> },
+  { path: "/roadmap/:courseId/:stepIdx/:topicIdx", element: <TopicContent /> },
+  { path: "/progress", element: <Progress /> },
+  { path: "/analytics", element: <Insights /> },
+  { path: "/chat", element: <DevChatSection /> },
+  { path: "/notes", element: <Notes /> },
+  { path: "/bookmarks", element: <Bookmarks /> },
+  { path: "/settings", element: <Settings /> },
+];
+
 function App() {
   return (
     <Router>
@@ -64,18 +79,20 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
-        <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout><Dashboard /></DashboardLayout></ProtectedRoute>} />
-        <Route path="/courses" element={<DashboardLayout><CourseCatalog /></DashboardLayout>} />
-        <Route path="/roadmap/:id" element={<DashboardLayout><CourseRoadmap /></DashboardLayout>} />
-        <Route path="/roadmap/:courseId/:stepIdx" element={<DashboardLayout><CourseDetail /></DashboardLayout>} />
-        <Route path="/roadmap/:courseId/:stepIdx/:topicIdx" element={<DashboardLayout><TopicContent /></DashboardLayout>} />
-        <Route path="/progress" element={<DashboardLayout><Progress /></DashboardLayout>} />
-        <Route path="/analytics" element={<DashboardLayout><Insights /></DashboardLayout>} />
-        <Route path="/chat" element={<DashboardLayout><DevChatSection /></DashboardLayout>} />
-        <Route path="/notes" element={<DashboardLayout><Notes /></DashboardLayout>} />
-        <Route path="/bookmarks" element={<DashboardLayout><Bookmarks /></DashboardLayout>} />
-        <Route path="/settings" element={<DashboardLayout><Settings /></DashboardLayout>} />
-        {/* Redirect any other path to dashboard */}
+        
+        {/* Wrap all dashboard routes in the layout and protection once */}
+        {dashboardRoutes.map(({ path, element }) => (
+          <Route
+            key={path}
+            path={path}
+            element={
+              <ProtectedRoute>
+                <DashboardLayout>{element}</DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+        ))}
+
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </Router>

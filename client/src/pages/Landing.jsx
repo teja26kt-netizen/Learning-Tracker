@@ -30,7 +30,7 @@ const Landing = () => {
                     <a href="#" className="hover:text-white transition-colors">Resources</a>
                     <a href="#" className="hover:text-white transition-colors">Community</a>
                     <button 
-                        onClick={() => navigate('/dashboard')}
+                        onClick={() => navigate('/login')}
                         className="px-6 py-3 bg-white text-slate-950 rounded-xl hover:bg-indigo-500 hover:text-white transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-white/5"
                     >
                         Sign In
@@ -58,7 +58,7 @@ const Landing = () => {
                         </p>
                         <div className="flex flex-col sm:flex-row items-center gap-5 pt-5">
                             <button 
-                                onClick={() => navigate('/dashboard')}
+                                onClick={() => navigate('/login')}
                                 className="w-full sm:w-auto px-10 py-5 bg-indigo-600 text-white rounded-2xl font-black flex items-center justify-center gap-3 hover:bg-indigo-700 transition-all shadow-2xl shadow-indigo-500/40 group"
                             >
                                 Start Learning Now <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
