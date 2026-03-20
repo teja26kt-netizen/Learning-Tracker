@@ -159,21 +159,21 @@ const Progress = () => {
 
     return (
         <div className="max-w-6xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000 pb-20">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-6 border-b border-slate-100">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-6 border-b border-slate-100 dark:border-slate-800">
                 <div className="max-w-2xl">
-                    <h1 className="text-5xl font-black text-slate-900 tracking-tight leading-tight">Focus Station</h1>
-                    <p className="text-slate-500 mt-4 text-xl font-medium leading-relaxed">Precision learning via high-performance intervals and telemetry.</p>
+                    <h1 className="text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">Focus Station</h1>
+                    <p className="text-slate-500 dark:text-slate-400 mt-4 text-xl font-medium leading-relaxed">Precision learning via high-performance intervals and telemetry.</p>
                 </div>
-                <div className="flex bg-slate-100 p-1.5 rounded-[1.5rem] border border-slate-200">
+                <div className="flex bg-slate-100 dark:bg-slate-800 p-1.5 rounded-[1.5rem] border border-slate-200 dark:border-slate-700">
                     <button 
                         onClick={() => switchMode('stopwatch')}
-                        className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${timerMode === 'stopwatch' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${timerMode === 'stopwatch' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'}`}
                     >
                         Total Focus
                     </button>
                     <button 
                         onClick={() => switchMode('pomodoro')}
-                        className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${timerMode === 'pomodoro' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${timerMode === 'pomodoro' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'}`}
                     >
                         Pomodoro Protocol
                     </button>
@@ -259,8 +259,8 @@ const Progress = () => {
                             
                             <div className="flex justify-between items-start mb-10 relative z-10">
                                 <div>
-                                    <h3 className="text-2xl font-black text-slate-900 tracking-tight leading-none">{goal.technology}</h3>
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-3 flex items-center gap-2">
+                                    <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-none">{goal.technology}</h3>
+                                    <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-3 flex items-center gap-2">
                                         <span className="w-1.5 h-1.5 bg-indigo-600 rounded-full"></span>
                                         {pData.daysRemaining} Cycles Remaining
                                     </p>
@@ -288,13 +288,13 @@ const Progress = () => {
                                 </div>
 
                                 <div className="flex items-center gap-6 pt-2">
-                                    <div className="flex items-center gap-3 bg-slate-50/80 px-5 py-3 rounded-2xl border border-slate-100/50 shadow-sm">
+                                    <div className="flex items-center gap-3 bg-slate-50/80 dark:bg-slate-800 px-5 py-3 rounded-2xl border border-slate-100/50 dark:border-slate-700 shadow-sm">
                                         <FiActivity className="text-indigo-500" />
-                                        <span className="text-xs font-black text-slate-900">{pData.completedDays} Sessions</span>
+                                        <span className="text-xs font-black text-slate-900 dark:text-white">{pData.completedDays} Sessions</span>
                                     </div>
-                                    <div className="flex items-center gap-3 bg-slate-50/80 px-5 py-3 rounded-2xl border border-slate-100/50 shadow-sm">
+                                    <div className="flex items-center gap-3 bg-slate-50/80 dark:bg-slate-800 px-5 py-3 rounded-2xl border border-slate-100/50 dark:border-slate-700 shadow-sm">
                                         <FiClock className="text-indigo-500" />
-                                        <span className="text-xs font-black text-slate-900">{goal.dailyTargetHours}h Target</span>
+                                        <span className="text-xs font-black text-slate-900 dark:text-white">{goal.dailyTargetHours}h Target</span>
                                     </div>
                                 </div>
                             </div>

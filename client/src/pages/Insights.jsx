@@ -73,28 +73,28 @@ const Insights = () => {
 
                 {/* Milestone Log */}
                 <div className="lg:col-span-2 glass-card premium-shadow p-12 rounded-[4rem] border border-white/50 flex flex-col overflow-hidden">
-                    <h3 className="text-xs font-black text-slate-900 mb-12 flex items-center gap-4 uppercase tracking-[0.2em]">
-                        <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center shadow-sm"><FiList size={18} /></div>
+                    <h3 className="text-xs font-black text-slate-900 dark:text-white mb-12 flex items-center gap-4 uppercase tracking-[0.2em]">
+                        <div className="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center shadow-sm"><FiList size={18} /></div>
                         Milestone Log
                     </h3>
                     <div className="flex-1 overflow-x-auto">
                         <table className="w-full text-left">
                             <thead>
-                                <tr className="border-b border-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                <tr className="border-b border-slate-50 dark:border-slate-800 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
                                     <th className="pb-8 px-6">Technical Module</th>
                                     <th className="pb-8 px-6">Timestamp</th>
                                     <th className="pb-8 px-6">Intensity</th>
                                     <th className="pb-8 px-6 text-right">Verification</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-50">
+                            <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
                                 {completedTopics.map((topic) => (
-                                    <tr key={topic.id} className="group hover:bg-slate-50/50 transition-all">
+                                    <tr key={topic.id} className="group hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-all">
                                         <td className="py-8 px-6">
-                                            <p className="font-black text-slate-900 group-hover:text-indigo-600 transition-colors">{topic.title}</p>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mt-1">Course ID: DEV-{topic.id * 128}</p>
+                                            <p className="font-black text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors">{topic.title}</p>
+                                            <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter mt-1">Course ID: DEV-{topic.id * 128}</p>
                                         </td>
-                                        <td className="py-8 px-6 text-sm font-bold text-slate-400">{topic.date}</td>
+                                        <td className="py-8 px-6 text-sm font-bold text-slate-400 dark:text-slate-500">{topic.date}</td>
                                         <td className="py-8 px-6 text-sm font-black text-indigo-500">{topic.timeSpent}</td>
                                         <td className="py-8 px-6 text-right">
                                             <span className="px-6 py-2.5 bg-emerald-50 text-emerald-600 rounded-[1rem] text-[9px] font-black uppercase tracking-widest border border-emerald-100/50">{topic.status}</span>
@@ -115,12 +115,12 @@ const Insights = () => {
                     { icon: <FiAward />,    label: 'badges Earned',     val: `${earnedCount}/${badges.length}` },
                     { icon: <FiActivity />, label: 'Target Accuracy',   val: '88%' }
                 ].map((stat, i) => (
-                    <div key={i} className="glass-card premium-shadow p-10 rounded-[3rem] border border-white/50 flex flex-col items-center text-center group hover:-translate-y-2 transition-all">
-                        <div className="w-14 h-14 rounded-2xl bg-slate-50 text-indigo-600 flex items-center justify-center text-2xl mb-8 shadow-sm group-hover:bg-indigo-600 group-hover:text-white group-hover:rotate-6 transition-all duration-500">
+                    <div key={i} className="glass-card premium-shadow p-10 rounded-[3rem] border border-white/50 dark:border-slate-800 flex flex-col items-center text-center group hover:-translate-y-2 transition-all">
+                        <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-2xl mb-8 shadow-sm group-hover:bg-indigo-600 group-hover:text-white group-hover:rotate-6 transition-all duration-500">
                             {stat.icon}
                         </div>
-                        <p className="text-4xl font-black text-slate-900 tracking-tight">{stat.val}</p>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-3 leading-none">{stat.label}</p>
+                        <p className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">{stat.val}</p>
+                        <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mt-3 leading-none">{stat.label}</p>
                     </div>
                 ))}
             </div>
@@ -147,8 +147,8 @@ const Insights = () => {
                             <div className={`text-5xl mb-5 transition-transform duration-500 ${badge.earned ? 'group-hover:scale-125 group-hover:rotate-12' : 'grayscale'}`}>
                                 {badge.icon}
                             </div>
-                            <h4 className="text-sm font-black text-slate-900 leading-tight">{badge.name}</h4>
-                            <p className="text-[10px] text-slate-400 font-bold mt-2 leading-relaxed uppercase tracking-tight">{badge.desc}</p>
+                            <h4 className="text-sm font-black text-slate-900 dark:text-white leading-tight">{badge.name}</h4>
+                            <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-2 leading-relaxed uppercase tracking-tight">{badge.desc}</p>
                         </div>
                     ))}
                 </div>
