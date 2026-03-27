@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const DailyGoal = require('../models/DailyGoal');
+const sendEmail = require('../utils/emailService');
 
 // @desc    Create a new daily goal
 // @route   POST /api/daily-goals/create
@@ -92,6 +93,20 @@ const updateDailyGoal = asyncHandler(async (req, res) => {
         req.body,
         { new: true }
     );
+
+    // Send email notification if goal was marked as completed and reminders are enabled
+    if (req.body.completed === true && goal.completed === false && updatedGoal.emailReminders) {
+        try {
+            await sendEmail({
+                email: req.user.email,
+                subject: `Goal Completed: ${updatedGoal.title} 🚀`,
+                message: `Great job, ${req.user.name}!\n\nYou've successfully completed your daily goal: "${updatedGoal.title}".\n\nYour current streak is now ${updatedGoal.streak} 🔥. Keep up the amazing momentum!\n\nBest,\nThe DevTrack Team`,
+            });
+            console.log(`Completion email sent to ${req.user.email} for goal: ${updatedGoal.title}`);
+        } catch (error) {
+            console.error('Error sending goal completion email:', error.message);
+        }
+    }
 
     res.status(200).json(updatedGoal);
 });
