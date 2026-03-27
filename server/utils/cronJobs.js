@@ -71,3 +71,51 @@ cron.schedule('0 8 * * *', async () => {
         console.error('Error running daily goal cron job:', err);
     }
 });
+
+// Schedule an evening job at 6:00 PM (18:00) server time for pending goals
+cron.schedule('0 18 * * *', async () => {
+    console.log('Running evening pending goal reminder check...');
+
+    try {
+        const incompleteGoals = await DailyGoal.find({
+            completed: false,
+            emailReminders: true
+        }).populate('userId', 'name email');
+
+        if (incompleteGoals.length === 0) {
+            console.log('No evening reminders to send.');
+            return;
+        }
+
+        const goalsByUser = {};
+        incompleteGoals.forEach((goal) => {
+            const userId = goal.userId._id.toString();
+            if (!goalsByUser[userId]) {
+                goalsByUser[userId] = { user: goal.userId, goals: [] };
+            }
+            goalsByUser[userId].goals.push(goal);
+        });
+
+        for (const userId in goalsByUser) {
+            const { user, goals } = goalsByUser[userId];
+            const goalListText = goals.map(g => `- ${g.title}`).join('\n');
+
+            const message = `Hello ${user.name},\n\nJust a friendly evening reminder! You still have some pending goals for today:\n\n${goalListText}\n\nThere's still time to finish strong! Mark them as complete in DevTrack when you're done.\n\nBest,\nThe DevTrack Team`;
+
+            try {
+                await sendEmail({
+                    email: user.email,
+                    subject: 'DevTrack - Evening Catch-up: Pending Goals',
+                    message,
+                });
+                console.log(`Evening reminder email sent to ${user.email}`);
+            } catch (err) {
+                console.error(`Failed to send evening email to ${user.email}:`, err.message);
+            }
+        }
+    } catch (err) {
+        console.error('Error running evening cron job:', err);
+    }
+});
+
+module.exports = cron;

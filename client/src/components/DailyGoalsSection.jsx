@@ -138,7 +138,8 @@ const DailyGoalsSection = () => {
                             <div className="flex items-center gap-4 flex-1">
                                 <button 
                                     onClick={() => toggleComplete(goal)}
-                                    className={`flex-shrink-0 transition-colors ${goal.completed ? 'text-emerald-500' : 'text-slate-300 hover:text-indigo-500'}`}
+                                    title={goal.completed ? "Unmark Goal" : "Mark as Completed"}
+                                    className={`flex-shrink-0 transition-all hover:scale-110 active:scale-95 ${goal.completed ? 'text-emerald-500' : 'text-slate-300 hover:text-indigo-500'}`}
                                 >
                                     {goal.completed ? <FiCheckCircle size={24} /> : <FiCircle size={24} />}
                                 </button>

@@ -100,7 +100,7 @@ const updateDailyGoal = asyncHandler(async (req, res) => {
             await sendEmail({
                 email: req.user.email,
                 subject: `Goal Completed: ${updatedGoal.title} 🚀`,
-                message: `Great job, ${req.user.name}!\n\nYou've successfully completed your daily goal: "${updatedGoal.title}".\n\nYour current streak is now ${updatedGoal.streak} 🔥. Keep up the amazing momentum!\n\nBest,\nThe DevTrack Team`,
+                message: `Great job, ${req.user.name}!\n\nYou've successfully completed your daily goal: "${updatedGoal.title}".\n\n🔥 CURRENT STREAK: ${updatedGoal.streak} DAYS 🔥\n\nKeep up the amazing momentum and finish the week strong!\n\nBest,\nThe DevTrack Team`,
             });
             console.log(`Completion email sent to ${req.user.email} for goal: ${updatedGoal.title}`);
         } catch (error) {
