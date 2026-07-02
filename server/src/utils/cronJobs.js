@@ -2,6 +2,7 @@ const cron = require('node-cron');
 const DailyGoal = require('../models/DailyGoal');
 const User = require('../models/User');
 const sendEmail = require('./emailService');
+const { notifyAdmin } = require('./alertService');
 const { isEmailConfigured } = require('./emailConfig');
 const {
     DEFAULT_TIMEZONE,
@@ -215,7 +216,27 @@ const checkAndSendReminders = async () => {
         }
     } catch (err) {
         console.error('Error running checkAndSendReminders:', err);
+        await notifyAdmin({
+            alertKey: 'reminder-cron-error',
+            subject: '[Learning Tracker] Reminder job crashed',
+            message: `The daily reminder cron failed:\n\n${err.message}`,
+        });
         return { sent, skipped, skipReasons, error: err.message, timezone: localNow.timezone };
+    }
+
+    if (skipReasons.send_failed > 0) {
+        await notifyAdmin({
+            alertKey: 'reminder-send-failed',
+            subject: `[Learning Tracker] ${skipReasons.send_failed} reminder email(s) failed`,
+            message: [
+                'Some reminder emails could not be sent.',
+                '',
+                `Failed: ${skipReasons.send_failed}`,
+                `Sent: ${sent}`,
+                `Skipped: ${skipped}`,
+                `Timezone: ${localNow.timezone}`,
+            ].join('\n'),
+        });
     }
 
     if (sent === 0 && eligibleUsers > 0) {
@@ -230,20 +251,24 @@ const checkAndSendReminders = async () => {
     return { sent, skipped, skipReasons, timezone: localNow.timezone, localTime: `${pad(localNow.hour)}:${pad(localNow.minute)}` };
 };
 
-// Run every minute while the server process is alive (backup when Render web is awake).
-// Production still needs Render Cron pinging /api/cron/reminders to wake the sleeping instance.
-const disableInternal = process.env.DISABLE_INTERNAL_CRON === 'true';
+let internalCronStarted = false;
 
-if (!disableInternal) {
+/** Start after MongoDB is connected — avoids races on first ticks. */
+const startInternalReminderCron = () => {
+    if (internalCronStarted || process.env.DISABLE_INTERNAL_CRON === 'true') {
+        return;
+    }
+    internalCronStarted = true;
     cron.schedule('* * * * *', async () => {
         await checkAndSendReminders();
     });
     console.log(`Internal reminder scheduler enabled (timezone: ${DEFAULT_TIMEZONE})`);
-}
+};
 
 module.exports = {
     cron,
     checkAndSendReminders,
     resetStaleCompletedGoals,
+    startInternalReminderCron,
     DEFAULT_TIMEZONE,
 };
