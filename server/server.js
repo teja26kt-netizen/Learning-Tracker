@@ -3,7 +3,10 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const morgan = require('morgan');
 const connectDB = require('./src/config/db');
-const { getEmailProvider } = require('./src/utils/emailConfig');
+const { getEmailProvider, isEmailConfigured, parseSender } = require('./src/utils/emailConfig');
+const { DEFAULT_TIMEZONE } = require('./src/utils/reminderSchedule');
+const { runSystemHealthCheck } = require('./src/utils/systemHealth');
+const { notifyAdmin } = require('./src/utils/alertService');
 
 // Load env vars
 dotenv.config();
@@ -65,9 +68,24 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
-// Lightweight health check (no DB) — warms Render instance for login
-app.get('/api/health', (req, res) => {
-    res.status(200).json({ ok: true, emailProvider: getEmailProvider() });
+// Health check — warms Render instance; ?deep=1 pings MongoDB
+app.get('/api/health', async (req, res) => {
+    const basic = {
+        ok: true,
+        emailProvider: getEmailProvider(),
+        emailReady: isEmailConfigured(),
+        senderConfigured: Boolean(parseSender().email),
+        cronConfigured: Boolean(process.env.CRON_SECRET),
+        adminAlertsConfigured: Boolean(process.env.ADMIN_EMAIL?.trim()),
+        reminderTimezone: DEFAULT_TIMEZONE,
+    };
+
+    if (req.query.deep !== '1') {
+        return res.status(200).json(basic);
+    }
+
+    const deep = await runSystemHealthCheck();
+    res.status(deep.ok ? 200 : 503).json({ ...basic, ...deep, ok: deep.ok });
 });
 
 // Routes
@@ -84,16 +102,32 @@ app.use('/api/cron', require('./src/routes/cronRoutes'));
 
 // Initialize cron jobs (also exposed at POST /api/cron/reminders for hosted cron pings)
 const mongoose = require('mongoose');
-const { checkAndSendReminders } = require('./src/utils/cronJobs');
+const { checkAndSendReminders, startInternalReminderCron } = require('./src/utils/cronJobs');
 
 mongoose.connection.once('open', () => {
     console.log('MongoDB connection established. Running startup email reminders check...');
+    startInternalReminderCron();
     checkAndSendReminders();
 });
 
-// Error handling middleware
+// Error handling middleware — emails admin on server errors (rate-limited)
 app.use((err, req, res, next) => {
     const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+    const path = `${req.method} ${req.originalUrl || req.url}`;
+
+    if (statusCode >= 500 && !String(err.message || '').includes('CORS:')) {
+        notifyAdmin({
+            alertKey: `api-error-${path}`,
+            subject: `[Learning Tracker] API error ${statusCode}`,
+            message: [
+                'A user request triggered a server error.',
+                '',
+                `Path: ${path}`,
+                `Error: ${err.message}`,
+            ].join('\n'),
+        }).catch(() => {});
+    }
+
     res.status(statusCode);
     res.json({
         message: err.message,
