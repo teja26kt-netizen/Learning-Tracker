@@ -2,6 +2,7 @@ const express = require('express');
 const { checkAndSendReminders } = require('../utils/cronJobs');
 const sendEmail = require('../utils/emailService');
 const { isEmailConfigured } = require('../utils/emailConfig');
+const { runHealthWatch } = require('../utils/healthWatch');
 
 const router = express.Router();
 
@@ -30,6 +31,17 @@ router.post('/reminders', authorizeCron, async (req, res) => {
 router.get('/reminders', authorizeCron, async (req, res) => {
     const result = await checkAndSendReminders();
     res.json({ ok: true, ...result });
+});
+
+// Background health watch — cron-job.org pings every 10–15 min; emails ADMIN_EMAIL on failure
+router.get('/health-watch', authorizeCron, async (req, res) => {
+    const result = await runHealthWatch();
+    res.status(result.ok ? 200 : 503).json(result);
+});
+
+router.post('/health-watch', authorizeCron, async (req, res) => {
+    const result = await runHealthWatch();
+    res.status(result.ok ? 200 : 503).json(result);
 });
 
 // Send a sample reminder email (protected — for launch verification)
