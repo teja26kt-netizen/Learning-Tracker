@@ -48,6 +48,7 @@ const run = async () => {
         });
         const status = {
             email: user.email,
+            emailNotification: user.emailNotification !== false,
             reminderEmail: user.reminderEmail || '(none)',
             reminderTime: user.reminderTime,
             reminderAmPm: user.reminderAmPm,

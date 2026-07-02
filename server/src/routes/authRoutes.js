@@ -5,6 +5,7 @@ const {
     getMe,
     logoutUser,
     updateUserProfile,
+    getReminderStatus,
 } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -15,5 +16,6 @@ router.post('/verify-otp', verifyOtp);
 router.get('/me', protect, getMe);
 router.get('/logout', logoutUser);
 router.put('/profile', protect, updateUserProfile);
+router.get('/reminder-status', protect, getReminderStatus);
 
 module.exports = router;

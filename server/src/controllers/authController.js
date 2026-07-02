@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/User');
-const { normalizeReminderStorage } = require('../utils/reminderSchedule');
+const DailyGoal = require('../models/DailyGoal');
+const { normalizeReminderStorage, getLocalNow, hasReminderTime, isReminderDue, wasReminderSentToday, DEFAULT_TIMEZONE } = require('../utils/reminderSchedule');
 const { isAdminUser } = require('../utils/adminAccess');
 const { normalizeEmail, maskEmail } = require('../utils/emailUtils');
 const { createAndSendOtp, verifyOtp: verifyOtpCode } = require('../utils/otpService');
@@ -179,10 +180,60 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     });
 });
 
+// @desc    Reminder readiness for the logged-in user
+// @route   GET /api/auth/reminder-status
+// @access  Private
+const getReminderStatus = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+        res.status(404);
+        throw new Error('User not found');
+    }
+
+    const localNow = getLocalNow();
+    const incompleteGoals = await DailyGoal.find({
+        userId: user._id,
+        completed: false,
+        emailReminders: true,
+    });
+
+    const blockers = [];
+    if (!isEmailConfigured()) blockers.push('server_email_not_ready');
+    if (user.emailNotification === false) blockers.push('email_notifications_off');
+    if (!user.getReminderEmail?.()) blockers.push('no_reminder_email');
+    if (!hasReminderTime(user)) blockers.push('no_reminder_time');
+    if (incompleteGoals.length === 0) blockers.push('no_incomplete_goals_with_bell');
+
+    const sentToday = wasReminderSentToday(user, localNow);
+    const dueNow = hasReminderTime(user) && isReminderDue(user, localNow);
+
+    res.json({
+        timezone: DEFAULT_TIMEZONE,
+        localTime: `${String(localNow.hour).padStart(2, '0')}:${String(localNow.minute).padStart(2, '0')}`,
+        localDate: localNow.dateKey,
+        reminderEmail: user.getReminderEmail(),
+        reminderTime: user.reminderTime,
+        reminderAmPm: user.reminderAmPm,
+        emailNotification: user.emailNotification !== false,
+        goalsWithBell: incompleteGoals.length,
+        sentToday,
+        dueNow,
+        willSendWhenDue: blockers.length === 0 && !sentToday,
+        blockers,
+        checklist: {
+            serverEmail: isEmailConfigured(),
+            notificationsOn: user.emailNotification !== false,
+            timeSet: hasReminderTime(user),
+            goalsReady: incompleteGoals.length > 0,
+        },
+    });
+});
+
 module.exports = {
     sendOtp,
     verifyOtp,
     getMe,
     logoutUser,
     updateUserProfile,
+    getReminderStatus,
 };
