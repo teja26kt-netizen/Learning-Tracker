@@ -3,6 +3,7 @@ const Otp = require('../models/Otp');
 const sendEmail = require('./emailService');
 const { isEmailConfigured } = require('./emailConfig');
 const { maskEmail } = require('./emailUtils');
+const { notifyAdmin } = require('./alertService');
 
 const OTP_TTL_MS = 10 * 60 * 1000;
 const MAX_VERIFY_ATTEMPTS = 5;
@@ -19,11 +20,27 @@ const sendOtpEmail = async (email, code) => {
         return;
     }
 
-    await sendEmail({
-        email,
-        subject: 'Your Learning Tracker login code',
-        message: `Your login code is ${code}.\n\nIt expires in 10 minutes. If you didn't request this, you can ignore this email.\n\n— Learning Tracker`,
-    });
+    try {
+        await sendEmail({
+            email,
+            subject: 'Your Learning Tracker login code',
+            message: `Your login code is ${code}.\n\nIt expires in 10 minutes. If you didn't request this, you can ignore this email.\n\n— Learning Tracker`,
+        });
+    } catch (err) {
+        await notifyAdmin({
+            alertKey: 'otp-email-failed',
+            subject: '[Learning Tracker] Login OTP email failed',
+            message: [
+                'A user tried to log in but the OTP email could not be sent.',
+                '',
+                `User email: ${maskEmail(email)}`,
+                `Brevo error: ${err.message}`,
+                '',
+                'Check BREVO_API_KEY and EMAIL_FROM on Render.',
+            ].join('\n'),
+        });
+        throw err;
+    }
 };
 
 const createAndSendOtp = async (email) => {
