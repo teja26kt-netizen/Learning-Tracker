@@ -1,6 +1,6 @@
 const brevoApiKey = () => process.env.BREVO_API_KEY?.trim() || '';
 
-const isEmailConfigured = () => Boolean(brevoApiKey());
+const isEmailConfigured = () => Boolean(brevoApiKey() && parseSender().email);
 
 const getEmailProvider = () => (brevoApiKey() ? 'brevo' : 'none');
 
