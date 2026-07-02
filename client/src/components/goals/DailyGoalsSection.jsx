@@ -104,19 +104,20 @@ const DailyGoalsSection = ({ onGoalsChange }) => {
         }
     };
 
-    const enableReminder = async (goal) => {
-        if (goal.emailReminders) return;
-
+    const toggleReminder = async (goal) => {
+        const next = !goal.emailReminders;
         try {
-            await API.put(`daily-goals/${goal._id}`, { emailReminders: true });
-            const next = goals.map(g =>
-                g._id === goal._id ? { ...g, emailReminders: true } : g
+            await API.put(`daily-goals/${goal._id}`, { emailReminders: next });
+            const updated = goals.map((g) =>
+                g._id === goal._id ? { ...g, emailReminders: next } : g
             );
-            setGoals(next);
-            writeGoalsCache(next);
-            showReminderNotice('Reminders on for this goal — set your send time in Settings if you have not yet');
+            setGoals(updated);
+            writeGoalsCache(updated);
+            if (next) {
+                showReminderNotice('Reminders on — set your send time in Settings if you have not yet');
+            }
         } catch (err) {
-            console.error('Error enabling daily goal reminder:', err);
+            console.error('Error updating daily goal reminder:', err);
         }
     };
 
@@ -133,7 +134,7 @@ const DailyGoalsSection = ({ onGoalsChange }) => {
             </div>
 
             <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
-                Tap the bell to turn reminders <strong>on</strong> for a goal. To turn reminders off, go to{' '}
+                Tap the bell to turn email reminders <strong>on or off</strong> for each goal. Set your send time in{' '}
                 <Link to="/settings#reminders" className="text-violet-600 dark:text-violet-400 font-bold hover:underline">
                     Settings
                 </Link>
@@ -200,24 +201,19 @@ const DailyGoalsSection = ({ onGoalsChange }) => {
                             </div>
 
                             <div className="flex items-center gap-1 shrink-0 ml-2">
-                                {goal.emailReminders ? (
-                                    <span
-                                        title="Reminders on — turn off in Settings"
-                                        className="p-1 rounded-lg bg-violet-50 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400"
-                                        aria-label="Reminders on"
-                                    >
-                                        <FiBell size={13} />
-                                    </span>
-                                ) : (
-                                    <button
-                                        type="button"
-                                        onClick={() => enableReminder(goal)}
-                                        title="Turn reminders on for this goal"
-                                        className="p-1 rounded-lg text-slate-400 dark:text-slate-600 hover:bg-violet-50 dark:hover:bg-violet-900/40 hover:text-violet-600 dark:hover:text-violet-400 transition-all"
-                                    >
-                                        <FiBellOff size={13} />
-                                    </button>
-                                )}
+                                <button
+                                    type="button"
+                                    onClick={() => toggleReminder(goal)}
+                                    title={goal.emailReminders ? 'Turn reminders off for this goal' : 'Turn reminders on for this goal'}
+                                    className={`p-1 rounded-lg transition-all ${
+                                        goal.emailReminders
+                                            ? 'bg-violet-50 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400'
+                                            : 'text-slate-400 dark:text-slate-600 hover:bg-violet-50 dark:hover:bg-violet-900/40 hover:text-violet-600 dark:hover:text-violet-400'
+                                    }`}
+                                    aria-label={goal.emailReminders ? 'Reminders on' : 'Reminders off'}
+                                >
+                                    {goal.emailReminders ? <FiBell size={13} /> : <FiBellOff size={13} />}
+                                </button>
                                 <button
                                     type="button"
                                     onClick={() => handleDelete(goal._id)}
