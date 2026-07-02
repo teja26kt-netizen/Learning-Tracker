@@ -89,6 +89,11 @@ const Login = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-sky-50/40 flex items-center justify-center px-4 py-12 max-md:min-h-[100dvh]">
             <div className="w-full max-w-md min-w-0">
+                <p className="text-center mb-4">
+                    <button type="button" onClick={() => navigate('/')} className="text-sm font-semibold text-slate-500 hover:text-violet-600">
+                        ← Back to home
+                    </button>
+                </p>
                 <div className="text-center mb-8">
                     <Logo className="w-14 h-14 mb-4 shadow-xl shadow-sky-200/80 rounded-2xl mx-auto" />
                     <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">

@@ -144,7 +144,7 @@ const Bookmarks = () => {
             <div className="bg-white dark:bg-slate-900 premium-shadow p-10 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <div>
                     <h4 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{bookmarks.length} Resources Indexed</h4>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mt-2">Your knowledge vault is synchronized. Add more resources to accelerate your growth.</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mt-2">Saved on this device for quick access. Sign in to sync notes and goals to your account.</p>
                 </div>
                 <div className="text-6xl group-hover:scale-110 transition-transform hidden md:block">🗂️</div>
             </div>

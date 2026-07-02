@@ -63,7 +63,18 @@ const CourseDetail = () => {
                                         >
                                             Technical Protocol <FiArrowRight />
                                         </button>
-                                        <button className="flex items-center gap-3 text-xs font-black text-slate-600 dark:text-slate-500 hover:text-violet-600 dark:hover:text-violet-400 transition-all uppercase tracking-[0.2em]">
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const channel = course.topChannels?.[0];
+                                                if (channel?.url) {
+                                                    window.open(channel.url, '_blank', 'noopener,noreferrer');
+                                                } else {
+                                                    navigate(`/roadmap/${courseId}/${stepIdx}/${i}`);
+                                                }
+                                            }}
+                                            className="flex items-center gap-3 text-xs font-black text-slate-600 dark:text-slate-500 hover:text-violet-600 dark:hover:text-violet-400 transition-all uppercase tracking-[0.2em]"
+                                        >
                                             <FiPlayCircle size={16} /> Workshop Session
                                         </button>
                                     </div>

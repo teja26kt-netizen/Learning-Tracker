@@ -15,11 +15,21 @@ export function Header() {
 	const compact = scrolled || open;
 
     const scrollToAbout = () => {
+        if (location.pathname !== '/') {
+            navigate('/#about');
+            setOpen(false);
+            return;
+        }
         document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
         setOpen(false);
     };
 
     const scrollToWorkflow = () => {
+        if (location.pathname !== '/') {
+            navigate('/#workflow');
+            setOpen(false);
+            return;
+        }
         document.getElementById('workflow')?.scrollIntoView({ behavior: 'smooth' });
         setOpen(false);
     };
