@@ -1,14 +1,16 @@
-import { useState, useContext, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useContext, useEffect, useMemo, useCallback } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { FiUser, FiBell, FiMail, FiCheckCircle, FiMessageCircle } from 'react-icons/fi';
 import PageHeader, { PAGE_SHELL } from '../components/layout/PageHeader';
 import ReportIssueForm from '../components/feedback/ReportIssueForm';
 import { formatReminderTime } from '../utils/formatReminderTime';
 import { REMINDER_TIMEZONE_LABEL } from '../config/reminderTimezone';
+import API from '../services/api';
 
 const Settings = () => {
     const { user, updateProfile } = useContext(AuthContext);
+    const location = useLocation();
     const [formData, setFormData] = useState({
         name: user?.name || '',
         reminderEmail: user?.reminderEmail || user?.email || '',
@@ -19,6 +21,16 @@ const Settings = () => {
     const [saveError, setSaveError] = useState('');
     const [amPm, setAmPm] = useState(user?.reminderAmPm || 'AM');
     const [reminderTime, setReminderTime] = useState(user?.reminderTime || '');
+    const [reminderStatus, setReminderStatus] = useState(null);
+
+    const loadReminderStatus = useCallback(async () => {
+        try {
+            const { data } = await API.get('auth/reminder-status');
+            setReminderStatus(data);
+        } catch (err) {
+            console.warn('Could not load reminder status', err);
+        }
+    }, []);
 
     const savedSnapshot = useMemo(() => {
         if (!user) return null;
@@ -53,11 +65,17 @@ const Settings = () => {
     }, [user]);
 
     useEffect(() => {
-        const hash = window.location.hash.replace('#', '');
+        loadReminderStatus();
+    }, [loadReminderStatus, user?.reminderTime, user?.emailNotification]);
+
+    useEffect(() => {
+        const hash = location.hash.replace('#', '');
         if (hash === 'reminders' || hash === 'feedback') {
-            document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            requestAnimationFrame(() => {
+                document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
         }
-    }, []);
+    }, [location.hash]);
 
     const applyAmPmToTime = (time24, nextAmPm) => {
         const [hStr, m] = time24.split(':');
@@ -95,6 +113,7 @@ const Settings = () => {
             });
             setSaved(true);
             setTimeout(() => setSaved(false), 3000);
+            loadReminderStatus();
         } catch (error) {
             console.error('Failed to update profile:', error);
             setSaveError(error.response?.data?.message || 'Failed to save preferences. Please try again.');
@@ -190,8 +209,41 @@ const Settings = () => {
                 </h3>
 
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Daily reminders go to your reminder email (defaults to your login email). Turn the bell on for each goal on Daily Goals.
+                    Daily reminders go to your reminder email (defaults to your login email). Tap the bell on each goal on Daily Goals.
                 </p>
+
+                {reminderStatus && (
+                    <div className={`rounded-xl border px-4 py-3 text-xs font-medium space-y-2 ${
+                        reminderStatus.willSendWhenDue
+                            ? 'border-emerald-100 dark:border-emerald-900/40 bg-emerald-50/80 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300'
+                            : 'border-amber-100 dark:border-amber-900/40 bg-amber-50/80 dark:bg-amber-950/30 text-amber-900 dark:text-amber-200'
+                    }`}>
+                        <p className="font-bold">
+                            {reminderStatus.willSendWhenDue
+                                ? `Ready — emails send after ${formatReminderTime(reminderStatus.reminderTime, reminderStatus.reminderAmPm)} ${REMINDER_TIMEZONE_LABEL} when you have incomplete goals.`
+                                : 'Complete these steps to receive reminder emails:'}
+                        </p>
+                        <ul className="space-y-1 list-disc pl-4">
+                            <li className={reminderStatus.checklist?.timeSet ? 'opacity-70' : ''}>
+                                {reminderStatus.checklist?.timeSet ? '✓' : '○'} Reminder time saved below
+                            </li>
+                            <li className={reminderStatus.checklist?.goalsReady ? 'opacity-70' : ''}>
+                                {reminderStatus.checklist?.goalsReady ? '✓' : '○'} At least one incomplete daily goal with bell on
+                            </li>
+                            <li className={reminderStatus.checklist?.notificationsOn ? 'opacity-70' : ''}>
+                                {reminderStatus.checklist?.notificationsOn ? '✓' : '○'} Daily email reminders turned on
+                            </li>
+                        </ul>
+                        {reminderStatus.sentToday && (
+                            <p className="text-[11px] opacity-90">Today&apos;s reminder was already sent. You won&apos;t get another until tomorrow.</p>
+                        )}
+                        {!reminderStatus.dueNow && reminderStatus.checklist?.timeSet && !reminderStatus.sentToday && (
+                            <p className="text-[11px] opacity-90">
+                                Server time now: {reminderStatus.localTime} {REMINDER_TIMEZONE_LABEL}. Emails send after your chosen time.
+                            </p>
+                        )}
+                    </div>
+                )}
 
                 <div className="space-y-1.5">
                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
@@ -208,8 +260,8 @@ const Settings = () => {
                         />
                     </div>
                     {!formData.reminderEmail && (
-                        <p className="text-xs text-amber-600 dark:text-amber-400 font-medium">
-                            No reminder email yet — you won&apos;t receive daily emails until you add one and save.
+                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                            Leave blank to use your login email ({user?.email}).
                         </p>
                     )}
                 </div>
@@ -229,6 +281,7 @@ const Settings = () => {
                             const next = user?.emailNotification === false;
                             try {
                                 await updateProfile({ emailNotification: next });
+                                loadReminderStatus();
                             } catch (err) {
                                 console.error('Failed to update email reminders:', err);
                             }
