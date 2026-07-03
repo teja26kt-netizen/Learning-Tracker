@@ -78,27 +78,47 @@ const getDashboardData = asyncHandler(async (req, res) => {
               )
             : 0;
 
-    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const weeklyActivity = [];
-    for (let i = 6; i >= 0; i -= 1) {
-        const dayStart = new Date(now);
-        dayStart.setDate(now.getDate() - i);
-        dayStart.setHours(0, 0, 0, 0);
-        const dayEnd = new Date(dayStart);
-        dayEnd.setDate(dayStart.getDate() + 1);
+    const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const monday = new Date(now);
+    const dayOfWeek = monday.getDay();
+    const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    monday.setDate(monday.getDate() - daysFromMonday);
+    monday.setHours(0, 0, 0, 0);
 
-        const hours = timeLogs
+    const sumHoursBetween = (start, end) =>
+        timeLogs
             .filter((log) => {
                 const logDate = new Date(log.date);
-                return logDate >= dayStart && logDate < dayEnd;
+                return logDate >= start && logDate < end;
             })
             .reduce((sum, log) => sum + log.hours, 0);
 
-        weeklyActivity.push({
-            name: dayNames[dayStart.getDay()],
-            hours: Math.round(hours * 10) / 10,
-        });
-    }
+    const weeklyActivity = dayLabels.map((name, i) => {
+        const dayStart = new Date(monday);
+        dayStart.setDate(monday.getDate() + i);
+        const dayEnd = new Date(dayStart);
+        dayEnd.setDate(dayStart.getDate() + 1);
+        return {
+            name,
+            hours: Math.round(sumHoursBetween(dayStart, dayEnd) * 10) / 10,
+        };
+    });
+
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const monthlyActivity = [0, 1, 2, 3].map((weekIndex) => {
+        const weekStart = new Date(monthStart);
+        weekStart.setDate(monthStart.getDate() + weekIndex * 7);
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 7);
+        if (weekStart > now) {
+            return { name: `Wk ${weekIndex + 1}`, hours: 0 };
+        }
+        const effectiveEnd = weekEnd > now ? new Date(now.getTime() + 86400000) : weekEnd;
+        return {
+            name: `Wk ${weekIndex + 1}`,
+            hours: Math.round(sumHoursBetween(weekStart, effectiveEnd) * 10) / 10,
+        };
+    });
 
     res.status(200).json({
         totalStudyHours: Math.round(totalHours * 10) / 10,
@@ -108,6 +128,7 @@ const getDashboardData = asyncHandler(async (req, res) => {
         consistencyMetrics: { uniqueStudyDays: uniqueStudyDays.size },
         goalsAnalysis: goalProgressList,
         weeklyActivity,
+        monthlyActivity,
     });
 });
 

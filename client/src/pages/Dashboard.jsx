@@ -4,17 +4,11 @@ import { courses } from '../data/CourseData';
 import API from '../services/api';
 import { readDashboardCache, writeDashboardCache } from '../utils/dashboardCache';
 import StatsCard from '../components/dashboard/StatsCard';
-import ChartCard from '../components/dashboard/ChartCard';
+import FocusDistributionChart from '../components/dashboard/FocusDistributionChart';
 import ReminderCard from '../components/goals/ReminderCard';
 import GoalCard from '../components/goals/GoalCard';
 import { FiClock, FiTarget, FiActivity, FiCalendar, FiPlus, FiArrowRight } from 'react-icons/fi';
 import { PAGE_SHELL_WIDE } from '../components/layout/PageHeader';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-
-const emptyWeekChart = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((name) => ({
-    name,
-    hours: 0,
-}));
 
 const StatSkeleton = () => (
     <div className="glass-card premium-shadow p-5 rounded-xl animate-pulse">
@@ -145,9 +139,8 @@ const Dashboard = () => {
         }
     }, [data, goals, loadingStats, loadingGoals]);
 
-    const chartData = data?.weeklyActivity?.length ? data.weeklyActivity : emptyWeekChart;
     const weekActivity = goalActivity?.days?.slice(-7) ?? [];
-    const hasChartData = chartData.some((d) => d.hours > 0);
+    const hasChartData = (data?.weeklyActivity ?? []).some((d) => d.hours > 0);
     const activeStreakDays = weekActivity.filter((d) => d.count > 0 || d.allCompleted).length;
 
     return (
@@ -244,72 +237,10 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 {/* Left Column: Activity & Goals */}
                 <div className="lg:col-span-8 space-y-6">
-                    {/* Activity Chart */}
-                    <div className="bg-slate-50 dark:bg-slate-900 p-6 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm relative overflow-hidden">
-                         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
-                            <div className="min-w-0">
-                                <h3 className="text-base sm:text-lg md:text-2xl font-black text-slate-900 dark:text-white break-words">Focus Distribution</h3>
-                                <p className="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-400 mt-1">Detailed activity analysis by days</p>
-                            </div>
-                            <div className="flex shrink-0 self-start sm:self-auto bg-slate-50 dark:bg-slate-800 p-1 rounded-xl sm:rounded-2xl border border-slate-100 dark:border-slate-700">
-                                <button type="button" className="px-3 sm:px-6 py-1.5 sm:py-2 bg-white dark:bg-slate-700 text-violet-600 dark:text-violet-400 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black shadow-sm shadow-violet-100 transition-all">WEEKLY</button>
-                                <button type="button" disabled title="Coming soon" className="px-3 sm:px-6 py-1.5 sm:py-2 text-slate-300 dark:text-slate-600 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black cursor-not-allowed">MONTHLY</button>
-                            </div>
-                        </div>
-                        <div className="h-[220px] ml-0 sm:-ml-2 md:-ml-4">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={chartData} margin={{ top: 10, right: 8, left: 4, bottom: 0 }}>
-                                    <defs>
-                                        <linearGradient id="colorHours" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#7c3aed" stopOpacity={0.4} />
-                                            <stop offset="95%" stopColor="#7c3aed" stopOpacity={0} />
-                                        </linearGradient>
-                                    </defs>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                    <XAxis
-                                        dataKey="name"
-                                        stroke="#94a3b8"
-                                        fontSize={12}
-                                        tickLine={false}
-                                        axisLine={false}
-                                        dy={15}
-                                        fontFamily="Outfit"
-                                    />
-                                    <YAxis
-                                        stroke="#94a3b8"
-                                        fontSize={12}
-                                        tickLine={false}
-                                        axisLine={false}
-                                        dx={-10}
-                                        fontFamily="Outfit"
-                                    />
-                                    <Tooltip
-                                        contentStyle={{
-                                            borderRadius: '24px',
-                                            border: 'none',
-                                            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
-                                            padding: '20px',
-                                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                                            backdropFilter: 'blur(10px)',
-                                            fontFamily: 'Outfit'
-                                        }}
-                                        itemStyle={{ color: '#7c3aed', fontWeight: '900', fontSize: '14px' }}
-                                        cursor={{ stroke: '#7c3aed', strokeWidth: 2, strokeDasharray: '6 6' }}
-                                    />
-                                    <Area
-                                        type="monotone"
-                                        dataKey="hours"
-                                        stroke="#7c3aed"
-                                        strokeWidth={2}
-                                        fillOpacity={1}
-                                        fill="url(#colorHours)"
-                                        animationDuration={800}
-                                        animationEasing="ease-in-out"
-                                    />
-                                </AreaChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </div>
+                    <FocusDistributionChart
+                        weeklyActivity={data?.weeklyActivity}
+                        monthlyActivity={data?.monthlyActivity}
+                    />
 
                     {/* Active Goals Horizontal */}
                     <div className="space-y-6">
