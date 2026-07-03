@@ -199,9 +199,11 @@ const Dashboard = () => {
                                 className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-white focus:ring-4 focus:ring-violet-100 dark:focus:ring-violet-900/20 transition-all outline-none"
                             />
                         </div>
-                        <div className="sm:col-span-1 lg:col-span-2 p-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl text-center">
-                            <p className="text-2xl font-black text-violet-600 dark:text-violet-400 leading-none">{daysLeft}</p>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Days Left</p>
+                        <div className="sm:col-span-1 lg:col-span-2 flex items-center justify-center py-2 px-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl text-center min-h-0">
+                            <div>
+                                <p className="text-lg sm:text-xl font-black text-violet-600 dark:text-violet-400 leading-none">{daysLeft}</p>
+                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-wider mt-0.5">Days Left</p>
+                            </div>
                         </div>
                         <div className="sm:col-span-1 lg:col-span-3">
                             <button
