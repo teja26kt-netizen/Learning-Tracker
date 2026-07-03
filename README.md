@@ -14,8 +14,36 @@ Learning-Tracker/
 
 ## Tech stack
 
-**Frontend:** React, Vite, Tailwind CSS, React Router  
-**Backend:** Node.js, Express, MongoDB, JWT, Brevo (email OTP + reminders)
+### Frontend
+| Technology | Role |
+|------------|------|
+| **React 19** | UI & components |
+| **Vite** | Dev server & production build |
+| **React Router** | Client-side routing |
+| **Tailwind CSS 4** | Styling & responsive layout |
+| **Axios** | REST API client |
+| **Recharts** | Dashboard & insights charts |
+| **Framer Motion** | UI animations |
+
+### Backend
+| Technology | Role |
+|------------|------|
+| **Node.js** | Server runtime |
+| **Express 5** | REST API |
+| **MongoDB + Mongoose** | Database & data models |
+| **JWT** | Authentication sessions |
+| **node-cron** | Scheduled reminders & health checks |
+| **Brevo API** | Login OTP + daily reminder emails |
+
+### Deployment & services
+| Service | Role |
+|---------|------|
+| **Vercel** | Frontend hosting |
+| **Render** | Backend API hosting |
+| **MongoDB Atlas** | Cloud database |
+| **cron-job.org** | Wakes API & runs reminder/monitoring jobs |
+
+**Architecture:** Full-stack monorepo — `client/` (React SPA) + `server/` (Express API).
 
 ## Run locally
 
