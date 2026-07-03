@@ -115,7 +115,9 @@ app.use((err, req, res, next) => {
     const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
     const path = `${req.method} ${req.originalUrl || req.url}`;
 
-    if (statusCode >= 500 && !String(err.message || '').includes('CORS:')) {
+    const isAuthError = /not authorized/i.test(String(err.message || ''));
+
+    if (statusCode >= 500 && !String(err.message || '').includes('CORS:') && !isAuthError) {
         notifyAdmin({
             alertKey: `api-error-${path}`,
             subject: `[Learning Tracker] API error ${statusCode}`,

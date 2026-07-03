@@ -49,11 +49,7 @@ export const AuthProvider = ({ children }) => {
                     applyAuthResponse(data);
                 }
             } catch (err) {
-                if (
-                    err.response?.status === 401 &&
-                    !cancelled &&
-                    localStorage.getItem('token') === tokenAtStart
-                ) {
+                if (!cancelled && localStorage.getItem('token') === tokenAtStart) {
                     clearSession();
                     setUser(null);
                 }
