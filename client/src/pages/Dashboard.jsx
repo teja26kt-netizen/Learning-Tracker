@@ -157,23 +157,63 @@ const Dashboard = () => {
                 </p>
             )}
             <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-5 md:p-6 text-slate-800 dark:text-slate-100 relative overflow-hidden shadow-sm group">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-violet-500/5 rounded-full -mr-20 -mt-20 blur-3xl group-hover:scale-110 transition-transform duration-500 pointer-events-none"></div>
-                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div className="max-w-md">
-                        <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-black uppercase tracking-[0.2em] mb-4 border border-slate-200 dark:border-slate-700">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-violet-500/5 rounded-full -mr-20 -mt-20 blur-3xl group-hover:scale-110 transition-transform duration-500 pointer-events-none" />
+                <div className="relative z-10 space-y-5">
+                    <div className="max-w-2xl">
+                        <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-black uppercase tracking-[0.2em] mb-3 border border-slate-200 dark:border-slate-700">
                             Adaptive Roadmap
                         </span>
-                        <h2 className="text-xl sm:text-2xl font-black leading-tight mb-2 tracking-tighter text-slate-900 dark:text-white italic break-words">Fast-Track Your <br className="hidden sm:block" />Learning Goal</h2>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed mt-2">Our AI-powered engine crafts personalized paths. Finish courses 3x faster with optimized daily targets.</p>
+                        <h2 className="text-xl sm:text-2xl font-black leading-tight tracking-tighter text-slate-900 dark:text-white italic break-words">
+                            Fast-Track Your Learning Goal
+                        </h2>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed mt-2">
+                            Pick a course, set your target date, then add your learning goal.
+                        </p>
                     </div>
-                    <button
-                        type="button"
-                        onClick={handleAddGoal}
-                        disabled={addingGoal}
-                        className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-violet-600 hover:bg-violet-700 text-white font-black rounded-2xl sm:rounded-[2rem] transition-all transform hover:scale-105 active:scale-95 shadow-md shadow-violet-200 dark:shadow-none flex items-center justify-center gap-2 sm:gap-3 uppercase tracking-widest text-[10px] sm:text-xs disabled:opacity-60 disabled:pointer-events-none"
-                    >
-                        <FiPlus className="shrink-0" /> {addingGoal ? 'Adding…' : 'Add Goal'}
-                    </button>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 lg:gap-4 items-end">
+                        <div className="sm:col-span-2 lg:col-span-4 space-y-1">
+                            <label htmlFor="banner-course" className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest pl-1">
+                                Course Choice
+                            </label>
+                            <select
+                                id="banner-course"
+                                value={selectedTrack}
+                                onChange={(e) => setSelectedTrack(e.target.value)}
+                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-white focus:ring-4 focus:ring-violet-100 dark:focus:ring-violet-900/20 transition-all outline-none cursor-pointer"
+                            >
+                                {courses.map((c) => (
+                                    <option key={c.id} value={c.id}>{c.title}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="sm:col-span-2 lg:col-span-3 space-y-1">
+                            <label htmlFor="banner-date" className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest pl-1">
+                                Target Date
+                            </label>
+                            <input
+                                id="banner-date"
+                                type="date"
+                                value={targetDate}
+                                onChange={(e) => setTargetDate(e.target.value)}
+                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-white focus:ring-4 focus:ring-violet-100 dark:focus:ring-violet-900/20 transition-all outline-none"
+                            />
+                        </div>
+                        <div className="sm:col-span-1 lg:col-span-2 p-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl text-center">
+                            <p className="text-2xl font-black text-violet-600 dark:text-violet-400 leading-none">{daysLeft}</p>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Days Left</p>
+                        </div>
+                        <div className="sm:col-span-1 lg:col-span-3">
+                            <button
+                                type="button"
+                                onClick={handleAddGoal}
+                                disabled={addingGoal}
+                                className="w-full py-3.5 bg-violet-600 hover:bg-violet-700 text-white font-black rounded-xl transition-all shadow-md shadow-violet-200 dark:shadow-none flex items-center justify-center gap-2 uppercase tracking-widest text-[10px] sm:text-xs disabled:opacity-60 disabled:pointer-events-none"
+                            >
+                                <FiPlus className="shrink-0" /> {addingGoal ? 'Adding…' : 'Add Goal'}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -254,47 +294,6 @@ const Dashboard = () => {
 
                 {/* Right Column: Goal Setting & Tips */}
                 <div className="lg:col-span-4 space-y-6">
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-violet-500/5 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
-                        <h3 className="text-base font-black mb-4 flex items-center gap-3 text-slate-900 dark:text-white">
-                            <FiTarget className="text-violet-600 dark:text-violet-400" /> Fast-Track Goal
-                        </h3>
-                        <div className="space-y-4 relative z-10">
-                            <div className="space-y-1">
-                                <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest pl-1">Course Choice</label>
-                                <select 
-                                    value={selectedTrack}
-                                    onChange={(e) => setSelectedTrack(e.target.value)}
-                                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-white focus:ring-4 focus:ring-violet-50 dark:focus:ring-violet-900/10 transition-all outline-none cursor-pointer"
-                                >
-                                    {courses.map(c => (
-                                        <option key={c.id} value={c.id} className="text-slate-900 dark:text-slate-300 bg-white dark:bg-slate-950">{c.title}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest pl-1">Target Date</label>
-                                <input 
-                                    type="date" 
-                                    value={targetDate}
-                                    onChange={(e) => setTargetDate(e.target.value)}
-                                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-white focus:ring-4 focus:ring-violet-50 dark:focus:ring-violet-900/10 transition-all outline-none"
-                                />
-                            </div>
-                            <div className="p-4 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 text-center rounded-xl">
-                                <p className="text-3xl font-black text-violet-600 dark:text-violet-400">{daysLeft}</p>
-                                <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-0.5">Days to Mastery</p>
-                            </div>
-                        </div>
-                        <button 
-                            onClick={handleAddGoal}
-                            disabled={addingGoal}
-                            className="w-full mt-4 py-3 bg-slate-900 dark:bg-slate-800 text-white rounded-xl font-black text-xs hover:bg-slate-800 dark:hover:bg-slate-700 transition-all shadow-md flex items-center justify-center gap-3 btn-hover-scale disabled:opacity-60 disabled:pointer-events-none"
-                        >
-                            <FiPlus /> {addingGoal ? 'Adding…' : 'Add Learning Goal'}
-                        </button>
-                    </div>
-
                     <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-gray-100 dark:border-slate-800 shadow-sm">
                          <h3 className="text-xl font-black text-slate-900 dark:text-white mb-8 flex items-center gap-3">
                             <FiCalendar className="text-indigo-600" /> Focus Streak
