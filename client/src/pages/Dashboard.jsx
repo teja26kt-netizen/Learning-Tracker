@@ -9,7 +9,7 @@ import ReminderCard from '../components/goals/ReminderCard';
 import GoalCard from '../components/goals/GoalCard';
 import { FiClock, FiTarget, FiCalendar, FiPlus, FiArrowRight, FiPieChart } from 'react-icons/fi';
 import { IoFlame } from 'react-icons/io5';
-import PageHeader, { PAGE_SHELL_WIDE } from '../components/layout/PageHeader';
+import { PAGE_SHELL_WIDE } from '../components/layout/PageHeader';
 import { calcStreak } from '../utils/calcStreak';
 
 const StatSkeleton = () => (
@@ -151,19 +151,6 @@ const Dashboard = () => {
 
     return (
         <div className={PAGE_SHELL_WIDE}>
-            <PageHeader
-                title="Dashboard"
-                description="Track your learning progress and achieve your goals."
-                actions={(
-                    <button
-                        type="button"
-                        onClick={() => navigate('/courses')}
-                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-bold text-sm transition-colors shadow-sm shadow-violet-200 dark:shadow-none"
-                    >
-                        <FiPlus size={16} /> Add Goal
-                    </button>
-                )}
-            />
             {goalNotice && (
                 <p className="text-xs font-semibold text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/40 border border-sky-100 dark:border-sky-900 rounded-xl px-4 py-2.5 break-words">
                     {goalNotice}
@@ -180,10 +167,12 @@ const Dashboard = () => {
                         <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed mt-2">Our AI-powered engine crafts personalized paths. Finish courses 3x faster with optimized daily targets.</p>
                     </div>
                     <button
-                        onClick={() => navigate('/courses')}
-                        className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-slate-900 dark:bg-slate-800 text-white font-black rounded-2xl sm:rounded-[2rem] hover:bg-slate-800 dark:hover:bg-slate-700 transition-all transform hover:scale-105 active:scale-95 shadow-md flex items-center justify-center gap-2 sm:gap-3 group/btn uppercase tracking-widest text-[10px] sm:text-xs"
+                        type="button"
+                        onClick={handleAddGoal}
+                        disabled={addingGoal}
+                        className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-violet-600 hover:bg-violet-700 text-white font-black rounded-2xl sm:rounded-[2rem] transition-all transform hover:scale-105 active:scale-95 shadow-md shadow-violet-200 dark:shadow-none flex items-center justify-center gap-2 sm:gap-3 uppercase tracking-widest text-[10px] sm:text-xs disabled:opacity-60 disabled:pointer-events-none"
                     >
-                        Generate My Path <FiArrowRight className="group-hover/btn:translate-x-1 transition-transform shrink-0" />
+                        <FiPlus className="shrink-0" /> {addingGoal ? 'Adding…' : 'Add Goal'}
                     </button>
                 </div>
             </div>
