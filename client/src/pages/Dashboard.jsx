@@ -163,8 +163,9 @@ const Dashboard = () => {
                         <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-black uppercase tracking-[0.2em] mb-3 border border-slate-200 dark:border-slate-700">
                             Adaptive Roadmap
                         </span>
-                        <h2 className="text-xl sm:text-2xl font-black leading-tight tracking-tighter text-slate-900 dark:text-white italic break-words">
-                            Fast-Track Your Learning Goal
+                        <h2 className="dashboard-fast-track-title text-2xl sm:text-3xl md:text-[2rem] text-slate-900 dark:text-white break-words">
+                            Fast-Track Your{' '}
+                            <span className="text-violet-600 dark:text-violet-400">Learning Goal</span>
                         </h2>
                         <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed mt-2">
                             Pick a course, set your target date, then add your learning goal.

@@ -339,6 +339,13 @@ body {
   }
 
   /* Landing body only — navbar keeps landing-cta / landing-nav-label above */
+  .dashboard-fast-track-title {
+    font-family: 'Syne', 'Outfit', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.08;
+  }
+
   .landing-accent-label {
     font-family: 'Bricolage Grotesque', 'Outfit', sans-serif;
     font-weight: 800;
