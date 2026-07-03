@@ -8,12 +8,14 @@ import {
     MdSettings,
     MdMail,
     MdAdminPanelSettings,
+    MdTimer,
 } from 'react-icons/md';
 
 export const iconRegistry = {
     dashboard: MdDashboard,
     roadmaps: MdMenuBook,
     goals: MdTrackChanges,
+    focus: MdTimer,
     notes: MdEditNote,
     resources: MdBookmark,
     insights: MdInsights,

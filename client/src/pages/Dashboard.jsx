@@ -232,9 +232,10 @@ const Dashboard = () => {
                         <DashboardMetricCard
                             title="Study Time"
                             value={studyTimeLabel}
-                            subtitle="This Week"
+                            subtitle={weeklyHours > 0 ? 'This Week' : 'Log time in Focus Station →'}
                             icon={<FiClock size={20} />}
                             accent="violet"
+                            onClick={() => navigate('/progress')}
                         />
                         <DashboardMetricCard
                             title="Active Goals"
