@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { courses } from '../data/CourseData';
 import API from '../services/api';
 import { readDashboardCache, writeDashboardCache } from '../utils/dashboardCache';
-import StatsCard from '../components/dashboard/StatsCard';
+import DashboardMetricCard from '../components/dashboard/DashboardMetricCard';
 import FocusDistributionChart from '../components/dashboard/FocusDistributionChart';
 import ReminderCard from '../components/goals/ReminderCard';
 import GoalCard from '../components/goals/GoalCard';
-import { FiClock, FiTarget, FiActivity, FiCalendar, FiPlus, FiArrowRight } from 'react-icons/fi';
-import { PAGE_SHELL_WIDE } from '../components/layout/PageHeader';
+import { FiClock, FiTarget, FiCalendar, FiPlus, FiArrowRight, FiPieChart } from 'react-icons/fi';
+import { IoFlame } from 'react-icons/io5';
+import PageHeader, { PAGE_SHELL_WIDE } from '../components/layout/PageHeader';
+import { calcStreak } from '../utils/calcStreak';
 
 const StatSkeleton = () => (
     <div className="glass-card premium-shadow p-5 rounded-xl animate-pulse">
@@ -140,11 +142,28 @@ const Dashboard = () => {
     }, [data, goals, loadingStats, loadingGoals]);
 
     const weekActivity = goalActivity?.days?.slice(-7) ?? [];
-    const hasChartData = (data?.weeklyActivity ?? []).some((d) => d.hours > 0);
-    const activeStreakDays = weekActivity.filter((d) => d.count > 0 || d.allCompleted).length;
+    const streakDays = calcStreak(goalActivity?.days);
+    const weeklyHours = data?.weeklyStudyHours ?? 0;
+    const completionRate = data?.completionRate ?? 0;
+    const totalPaths = goals.length;
+    const activePaths = goals.filter((g) => new Date(g.endDate) >= new Date()).length;
+    const studyTimeLabel = weeklyHours === 1 ? '1 hr' : `${weeklyHours} hrs`;
 
     return (
         <div className={PAGE_SHELL_WIDE}>
+            <PageHeader
+                title="Dashboard"
+                description="Track your learning progress and achieve your goals."
+                actions={(
+                    <button
+                        type="button"
+                        onClick={() => navigate('/courses')}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-bold text-sm transition-colors shadow-sm shadow-violet-200 dark:shadow-none"
+                    >
+                        <FiPlus size={16} /> Add Goal
+                    </button>
+                )}
+            />
             {goalNotice && (
                 <p className="text-xs font-semibold text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/40 border border-sky-100 dark:border-sky-900 rounded-xl px-4 py-2.5 break-words">
                     {goalNotice}
@@ -170,65 +189,44 @@ const Dashboard = () => {
             </div>
 
             {/* Quick Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {loadingStats ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {loadingStats || loadingGoals ? (
                     <>
                         <StatSkeleton />
                         <StatSkeleton />
-                        <div className="lg:col-span-2"><StatSkeleton /></div>
+                        <StatSkeleton />
+                        <StatSkeleton />
                     </>
                 ) : (
                     <>
-                        <div className="glass-card premium-shadow p-5 rounded-xl group hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-default">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="p-3 bg-violet-50 text-violet-600 rounded-xl group-hover:bg-violet-600 group-hover:text-white transition-all duration-500">
-                                    <FiClock size={20} />
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-xs font-black text-slate-600 uppercase tracking-widest">Efficiency</p>
-                                    <p className="text-xs font-bold text-slate-400">{hasChartData ? 'This week' : 'No logs yet'}</p>
-                                </div>
-                            </div>
-                            <h3 className="text-2xl font-black text-slate-900 dark:text-white">{data?.totalStudyHours ?? 0}h</h3>
-                            <p className="text-xs font-semibold text-slate-500 mt-0.5">Total Study Time</p>
-                        </div>
-
-                        <div className="glass-card premium-shadow p-5 rounded-xl group hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-default">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="p-3 bg-rose-50 text-rose-600 rounded-xl group-hover:bg-rose-600 group-hover:text-white transition-all duration-500">
-                                    <FiActivity size={20} />
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-xs font-black text-slate-600 uppercase tracking-widest">Intensity</p>
-                                    <p className="text-xs font-bold text-slate-400">{data?.weeklyStudyHours ? 'Last 7 days' : 'Start logging'}</p>
-                                </div>
-                            </div>
-                            <h3 className="text-2xl font-black text-slate-900 dark:text-white">{data?.weeklyStudyHours ?? 0}h</h3>
-                            <p className="text-xs font-bold text-slate-700 mt-0.5">Weekly Intensity</p>
-                        </div>
-
-                        <div className="glass-card premium-shadow p-5 rounded-xl group hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-default lg:col-span-2 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 p-8 opacity-5">
-                                <FiPlus size={100} />
-                            </div>
-                            <div className="flex flex-col h-full justify-between">
-                                <div className="flex items-center gap-4 mb-3">
-                                    <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
-                                        <FiTarget size={20} />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-lg font-black text-slate-900 dark:text-white">Current Goal Progress</h3>
-                                        <p className="text-xs font-bold text-slate-700 dark:text-slate-400">Track and manage your active paths</p>
-                                    </div>
-                                </div>
-                                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-1">
-                                    <div
-                                        className="bg-violet-600 h-full rounded-full shadow-[0_0_15px_rgba(124,58,237,0.5)] transition-all duration-1000"
-                                        style={{ width: `${data?.completionRate || 0}%` }}
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                        <DashboardMetricCard
+                            title="Study Time"
+                            value={studyTimeLabel}
+                            subtitle="This Week"
+                            icon={<FiClock size={20} />}
+                            accent="violet"
+                        />
+                        <DashboardMetricCard
+                            title="Active Goals"
+                            value={totalPaths > 0 ? `${activePaths} / ${totalPaths}` : '0'}
+                            subtitle="In Progress"
+                            icon={<FiTarget size={20} />}
+                            accent="emerald"
+                        />
+                        <DashboardMetricCard
+                            title="Streak"
+                            value={`${streakDays} ${streakDays === 1 ? 'Day' : 'Days'}`}
+                            subtitle={streakDays > 0 ? 'Keep it up!' : 'Complete a daily goal'}
+                            icon={<IoFlame size={20} />}
+                            accent="orange"
+                        />
+                        <DashboardMetricCard
+                            title="Progress"
+                            value={`${completionRate}%`}
+                            subtitle="Overall"
+                            icon={<FiPieChart size={20} />}
+                            accent="blue"
+                        />
                     </>
                 )}
             </div>
@@ -331,8 +329,8 @@ const Dashboard = () => {
                         ) : (
                             <p className="text-sm font-semibold text-slate-500">Add daily goals and check them off to build your streak.</p>
                         )}
-                        {activeStreakDays > 0 && (
-                            <p className="text-xs font-bold text-violet-600 dark:text-violet-400 mt-4">{activeStreakDays} active day{activeStreakDays === 1 ? '' : 's'} this week</p>
+                        {streakDays > 0 && (
+                            <p className="text-xs font-bold text-violet-600 dark:text-violet-400 mt-4">{streakDays} day streak — keep going!</p>
                         )}
                     </div>
 

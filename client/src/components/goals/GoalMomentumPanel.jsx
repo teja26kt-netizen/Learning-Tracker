@@ -3,15 +3,7 @@ import { FiZap, FiTrendingUp, FiCalendar } from 'react-icons/fi';
 import API from '../../services/api';
 import { readActivityCache, writeActivityCache } from '../../utils/goalsCache';
 
-const calcStreak = (days) => {
-    if (!days?.length) return 0;
-    let streak = 0;
-    for (let i = days.length - 1; i >= 0; i--) {
-        if (days[i].count > 0 || days[i].allCompleted) streak += 1;
-        else break;
-    }
-    return streak;
-};
+import { calcStreak } from '../../utils/calcStreak';
 
 const weekRate = (days) => {
     const last7 = days?.slice(-7) ?? [];
