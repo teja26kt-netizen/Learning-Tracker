@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuthReady } from '../hooks/useAuthReady';
 import API from '../services/api';
 import LoadingScreen from '../components/ui/LoadingScreen';
 import PageHeader, { PAGE_SHELL } from '../components/layout/PageHeader';
@@ -8,6 +9,7 @@ import { FiCheckCircle, FiClock, FiActivity, FiXCircle, FiPlay, FiPause, FiRotat
 
 const Progress = () => {
     const navigate = useNavigate();
+    const { ready: authReady } = useAuthReady();
     const [goals, setGoals] = useState([]);
     const [progressData, setProgressData] = useState({});
     const [loading, setLoading] = useState(true);
@@ -45,8 +47,9 @@ const Progress = () => {
     };
 
     useEffect(() => {
+        if (!authReady) return;
         fetchData();
-    }, []);
+    }, [authReady]);
 
     // Master Timer Effect
     useEffect(() => {

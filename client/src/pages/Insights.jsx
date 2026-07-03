@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { FiActivity, FiClock, FiList, FiDownload } from 'react-icons/fi';
+import { useAuthReady } from '../hooks/useAuthReady';
 import API from '../services/api';
 import LoadingScreen from '../components/ui/LoadingScreen';
 import PageHeader, { PAGE_SHELL } from '../components/layout/PageHeader';
@@ -8,11 +9,14 @@ import PageHeader, { PAGE_SHELL } from '../components/layout/PageHeader';
 const PIE_COLORS = ['#6366f1', '#8b5cf6', '#10b981', '#f59e0b', '#ec4899', '#06b6d4'];
 
 const Insights = () => {
+    const { ready: authReady } = useAuthReady();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
     useEffect(() => {
+        if (!authReady) return;
+
         const fetchAnalytics = async () => {
             try {
                 setLoading(true);
@@ -27,7 +31,7 @@ const Insights = () => {
             }
         };
         fetchAnalytics();
-    }, []);
+    }, [authReady]);
 
     const timeData =
         data?.goalsAnalysis?.length > 0

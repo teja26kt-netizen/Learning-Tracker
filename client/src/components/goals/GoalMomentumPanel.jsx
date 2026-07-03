@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { FiZap, FiTrendingUp, FiCalendar } from 'react-icons/fi';
 import API from '../../services/api';
+import { useAuthReady } from '../../hooks/useAuthReady';
 import { readActivityCache, writeActivityCache } from '../../utils/goalsCache';
 
 import { calcStreak } from '../../utils/calcStreak';
@@ -13,11 +14,14 @@ const weekRate = (days) => {
 };
 
 const GoalMomentumPanel = ({ refreshKey = 0 }) => {
+    const { ready: authReady } = useAuthReady();
     const cached = readActivityCache();
     const [activity, setActivity] = useState(cached);
     const [error, setError] = useState('');
 
     useEffect(() => {
+        if (!authReady) return;
+
         let cancelled = false;
 
         const fetchActivity = async () => {
@@ -38,7 +42,7 @@ const GoalMomentumPanel = ({ refreshKey = 0 }) => {
 
         fetchActivity();
         return () => { cancelled = true; };
-    }, [refreshKey]);
+    }, [refreshKey, authReady]);
 
     const streak = useMemo(() => calcStreak(activity?.days), [activity]);
     const weekly = useMemo(() => weekRate(activity?.days), [activity]);

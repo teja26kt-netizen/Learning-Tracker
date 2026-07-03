@@ -1,8 +1,8 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { courses } from '../data/CourseData';
 import API from '../services/api';
-import { AuthContext } from '../context/AuthContext';
+import { useAuthReady } from '../hooks/useAuthReady';
 import { readDashboardCache, writeDashboardCache } from '../utils/dashboardCache';
 import DashboardMetricCard from '../components/dashboard/DashboardMetricCard';
 import FocusDistributionChart from '../components/dashboard/FocusDistributionChart';
@@ -23,7 +23,7 @@ const StatSkeleton = () => (
 
 const Dashboard = () => {
     const navigate = useNavigate();
-    const { user: authUser, loading: authLoading } = useContext(AuthContext);
+    const { ready: authReady } = useAuthReady();
     const [data, setData] = useState(() => readDashboardCache()?.data ?? null);
     const [loadingStats, setLoadingStats] = useState(false);
     const [loadingGoals, setLoadingGoals] = useState(false);
@@ -91,7 +91,7 @@ const Dashboard = () => {
     };
 
     useEffect(() => {
-        if (authLoading || !authUser) return;
+        if (!authReady) return;
 
         let cancelled = false;
 
@@ -137,7 +137,7 @@ const Dashboard = () => {
             cancelled = true;
             clearTimeout(activityTimer);
         };
-    }, [authLoading, authUser]);
+    }, [authReady]);
 
     useEffect(() => {
         if (!loadingStats && !loadingGoals) {

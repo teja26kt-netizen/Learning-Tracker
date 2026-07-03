@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuthReady } from '../../hooks/useAuthReady';
 import API from '../../services/api';
 import { readGoalsCache, writeGoalsCache } from '../../utils/goalsCache';
 import { FiCheckCircle, FiCircle, FiBell, FiBellOff, FiTrash2, FiPlus } from 'react-icons/fi';
 
 const DailyGoalsSection = ({ onGoalsChange }) => {
+    const { ready: authReady } = useAuthReady();
     const cachedGoals = readGoalsCache();
     const [goals, setGoals] = useState(() => (Array.isArray(cachedGoals) ? cachedGoals : []));
     const [newGoalTitle, setNewGoalTitle] = useState('');
@@ -37,8 +39,9 @@ const DailyGoalsSection = ({ onGoalsChange }) => {
     };
 
     useEffect(() => {
+        if (!authReady) return;
         fetchGoals();
-    }, []);
+    }, [authReady]);
 
     const handleAddGoal = async (e) => {
         e.preventDefault();
