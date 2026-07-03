@@ -160,10 +160,10 @@ const Dashboard = () => {
                 <div className="absolute top-0 right-0 w-64 h-64 bg-violet-500/5 rounded-full -mr-20 -mt-20 blur-3xl group-hover:scale-110 transition-transform duration-500 pointer-events-none" />
                 <div className="relative z-10 space-y-5">
                     <div className="max-w-2xl">
-                        <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-black uppercase tracking-[0.2em] mb-3 border border-slate-200 dark:border-slate-700">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-500 text-[10px] font-black uppercase tracking-[0.16em] mb-2.5 border border-slate-200 dark:border-slate-700">
                             Adaptive Roadmap
                         </span>
-                        <h2 className="text-xl sm:text-2xl font-black leading-tight tracking-tighter text-slate-900 dark:text-white italic break-words">
+                        <h2 className="text-2xl sm:text-3xl font-black leading-tight tracking-tighter text-slate-900 dark:text-white italic break-words">
                             Fast-Track Your Learning Goal
                         </h2>
                         <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed mt-2">
