@@ -184,7 +184,7 @@ const Dashboard = () => {
                                 id="banner-course"
                                 value={selectedTrack}
                                 onChange={(e) => setSelectedTrack(e.target.value)}
-                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-white focus:ring-4 focus:ring-violet-100 dark:focus:ring-violet-900/20 transition-all outline-none cursor-pointer"
+                                className="w-full min-h-[44px] bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-sm font-bold text-slate-900 dark:text-white focus:ring-4 focus:ring-violet-100 dark:focus:ring-violet-900/20 transition-all outline-none cursor-pointer"
                             >
                                 {courses.map((c) => (
                                     <option key={c.id} value={c.id}>{c.title}</option>
@@ -200,21 +200,21 @@ const Dashboard = () => {
                                 type="date"
                                 value={targetDate}
                                 onChange={(e) => setTargetDate(e.target.value)}
-                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold text-slate-900 dark:text-white focus:ring-4 focus:ring-violet-100 dark:focus:ring-violet-900/20 transition-all outline-none"
+                                className="w-full min-h-[44px] bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-sm font-bold text-slate-900 dark:text-white focus:ring-4 focus:ring-violet-100 dark:focus:ring-violet-900/20 transition-all outline-none"
                             />
                         </div>
-                        <div className="sm:col-span-1 lg:col-span-2 flex items-center justify-center py-2 px-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl text-center min-h-0">
+                        <div className="sm:col-span-2 lg:col-span-2 flex items-center justify-center py-2 px-2 min-h-[44px] bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl text-center">
                             <div>
                                 <p className="text-lg sm:text-xl font-black text-violet-600 dark:text-violet-400 leading-none">{daysLeft}</p>
                                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-wider mt-0.5">Days Left</p>
                             </div>
                         </div>
-                        <div className="sm:col-span-1 lg:col-span-3">
+                        <div className="sm:col-span-2 lg:col-span-3">
                             <button
                                 type="button"
                                 onClick={handleAddGoal}
                                 disabled={addingGoal}
-                                className="w-full py-3.5 bg-violet-600 hover:bg-violet-700 text-white font-black rounded-xl transition-all shadow-md shadow-violet-200 dark:shadow-none flex items-center justify-center gap-2 uppercase tracking-widest text-[10px] sm:text-xs disabled:opacity-60 disabled:pointer-events-none"
+                                className="w-full min-h-[44px] py-3.5 bg-violet-600 hover:bg-violet-700 text-white font-black rounded-xl transition-all shadow-md shadow-violet-200 dark:shadow-none flex items-center justify-center gap-2 uppercase tracking-widest text-[10px] sm:text-xs disabled:opacity-60 disabled:pointer-events-none"
                             >
                                 <FiPlus className="shrink-0" /> {addingGoal ? 'Adding…' : 'Add Goal'}
                             </button>
@@ -301,8 +301,8 @@ const Dashboard = () => {
 
                 {/* Right Column: Goal Setting & Tips */}
                 <div className="lg:col-span-4 space-y-6">
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-gray-100 dark:border-slate-800 shadow-sm">
-                         <h3 className="text-xl font-black text-slate-900 dark:text-white mb-8 flex items-center gap-3">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 border border-gray-100 dark:border-slate-800 shadow-sm overflow-visible">
+                         <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white mb-6 sm:mb-8 flex items-center gap-3">
                             <FiCalendar className="text-indigo-600" /> Focus Streak
                         </h3>
                         {weekActivity.length > 0 ? (
