@@ -154,17 +154,17 @@ const DailyGoalsSection = ({ onGoalsChange }) => {
                 </div>
             )}
 
-            <form onSubmit={handleAddGoal} className="flex items-center gap-2 p-2 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-100 dark:border-slate-800">
+            <form onSubmit={handleAddGoal} className="flex flex-col sm:flex-row sm:items-center gap-2 p-2 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-100 dark:border-slate-800">
                 <input
                     type="text"
                     placeholder="Add a new goal (reminders on by default)..."
                     value={newGoalTitle}
                     onChange={(e) => setNewGoalTitle(e.target.value)}
-                    className="flex-1 min-w-0 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-1.5 text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/10 focus:border-violet-500 transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600"
+                    className="flex-1 min-w-0 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2.5 min-h-[44px] text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/10 focus:border-violet-500 transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600"
                     required
                 />
-                <button type="submit" disabled={adding} className="bg-violet-600 text-white p-1.5 rounded-lg hover:bg-violet-700 transition-all active:scale-95 shrink-0 disabled:opacity-50" title="Add goal">
-                    <FiPlus size={14} />
+                <button type="submit" disabled={adding} className="bg-violet-600 text-white p-2.5 min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-lg hover:bg-violet-700 transition-all active:scale-95 shrink-0 disabled:opacity-50" title="Add goal">
+                    <FiPlus size={16} />
                 </button>
             </form>
 
@@ -172,7 +172,7 @@ const DailyGoalsSection = ({ onGoalsChange }) => {
                 {loading && goals.length === 0 ? (
                     <div className="space-y-1.5" aria-hidden>
                         {[0, 1, 2].map((i) => (
-                            <div key={i} className="h-9 rounded-lg bg-slate-100 dark:bg-slate-800 animate-pulse" />
+                            <div key={i} className="h-11 rounded-lg bg-slate-100 dark:bg-slate-800 animate-pulse" />
                         ))}
                     </div>
                 ) : goals.length === 0 ? (
@@ -181,15 +181,15 @@ const DailyGoalsSection = ({ onGoalsChange }) => {
                     </div>
                 ) : (
                     goals.map(goal => (
-                        <div key={goal._id} className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg border transition-all ${goal.completed ? 'bg-slate-50/50 dark:bg-slate-900/30 border-slate-100 dark:border-slate-800 opacity-60' : 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 hover:border-violet-300 dark:hover:border-violet-500/50'}`}>
+                        <div key={goal._id} className={`flex items-center justify-between px-2.5 py-2.5 rounded-lg border transition-all ${goal.completed ? 'bg-slate-50/50 dark:bg-slate-900/30 border-slate-100 dark:border-slate-800 opacity-60' : 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 hover:border-violet-300 dark:hover:border-violet-500/50'}`}>
                             <div className="flex items-center gap-2 flex-1 min-w-0">
                                 <button
                                     type="button"
                                     onClick={() => toggleComplete(goal)}
                                     title={goal.completed ? 'Unmark Goal' : 'Mark as Completed'}
-                                    className={`flex-shrink-0 transition-all ${goal.completed ? 'text-emerald-500 dark:text-emerald-400' : 'text-slate-200 dark:text-slate-700 hover:text-violet-500'}`}
+                                    className={`flex-shrink-0 p-2.5 min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-lg transition-all ${goal.completed ? 'text-emerald-500 dark:text-emerald-400' : 'text-slate-200 dark:text-slate-700 hover:text-violet-500'}`}
                                 >
-                                    {goal.completed ? <FiCheckCircle size={16} /> : <FiCircle size={16} />}
+                                    {goal.completed ? <FiCheckCircle size={18} /> : <FiCircle size={18} />}
                                 </button>
                                 <div className="flex items-center gap-2 min-w-0 flex-1">
                                     <span className={`text-xs sm:text-sm font-bold truncate ${goal.completed ? 'text-slate-400 dark:text-slate-600 line-through' : 'text-slate-900 dark:text-white'}`}>
@@ -203,27 +203,27 @@ const DailyGoalsSection = ({ onGoalsChange }) => {
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-1 shrink-0 ml-2">
+                            <div className="flex items-center gap-0.5 shrink-0 ml-1">
                                 <button
                                     type="button"
                                     onClick={() => toggleReminder(goal)}
                                     title={goal.emailReminders ? 'Turn reminders off for this goal' : 'Turn reminders on for this goal'}
-                                    className={`p-1 rounded-lg transition-all ${
+                                    className={`p-2.5 min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-lg transition-all ${
                                         goal.emailReminders
                                             ? 'bg-violet-50 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400'
                                             : 'text-slate-400 dark:text-slate-600 hover:bg-violet-50 dark:hover:bg-violet-900/40 hover:text-violet-600 dark:hover:text-violet-400'
                                     }`}
                                     aria-label={goal.emailReminders ? 'Reminders on' : 'Reminders off'}
                                 >
-                                    {goal.emailReminders ? <FiBell size={13} /> : <FiBellOff size={13} />}
+                                    {goal.emailReminders ? <FiBell size={15} /> : <FiBellOff size={15} />}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => handleDelete(goal._id)}
                                     title="Delete Goal"
-                                    className="p-1 text-slate-300 dark:text-slate-700 hover:text-rose-500 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-all"
+                                    className="p-2.5 min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-slate-300 dark:text-slate-700 hover:text-rose-500 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-all"
                                 >
-                                    <FiTrash2 size={13} />
+                                    <FiTrash2 size={15} />
                                 </button>
                             </div>
                         </div>
