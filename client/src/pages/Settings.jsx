@@ -141,7 +141,7 @@ const Settings = () => {
                             type="button"
                             onClick={handleSave}
                             disabled={!hasUnsavedChanges || saving}
-                            className="w-full sm:w-auto px-5 py-2.5 bg-slate-900 dark:bg-slate-800 text-white rounded-xl font-bold text-sm hover:bg-sky-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none"
+                            className="w-full sm:w-auto px-5 py-2.5 min-h-[44px] bg-slate-900 dark:bg-slate-800 text-white rounded-xl font-bold text-sm hover:bg-sky-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none"
                         >
                             {saving ? 'Saving…' : 'Save'} {saved && !saving && <FiCheckCircle className="animate-in zoom-in duration-300" />}
                         </button>
@@ -172,7 +172,7 @@ const Settings = () => {
                 ) : null}
             </div>
 
-            <div className="max-w-2xl bg-white dark:bg-slate-900 premium-shadow rounded-2xl p-6 border border-slate-100 dark:border-slate-800 space-y-5">
+            <div className="max-w-2xl bg-white dark:bg-slate-900 premium-shadow rounded-2xl p-4 sm:p-6 border border-slate-100 dark:border-slate-800 space-y-5">
                 <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
                     <FiUser size={16} className="text-sky-500" />
                     Profile
@@ -202,7 +202,7 @@ const Settings = () => {
                 </div>
             </div>
 
-            <div id="reminders" className="max-w-2xl bg-white dark:bg-slate-900 premium-shadow rounded-2xl p-6 border border-slate-100 dark:border-slate-800 scroll-mt-24 space-y-5">
+            <div id="reminders" className="max-w-2xl bg-white dark:bg-slate-900 premium-shadow rounded-2xl p-4 sm:p-6 border border-slate-100 dark:border-slate-800 scroll-mt-24 space-y-5">
                 <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
                     <FiBell size={16} className="text-rose-500" />
                     Email reminders
@@ -324,7 +324,7 @@ const Settings = () => {
                                 key={period}
                                 type="button"
                                 onClick={() => handleAmPmChange(period)}
-                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${amPm === period ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-sky-600'}`}
+                                className={`px-3 py-2.5 min-h-[44px] rounded-lg text-xs font-bold transition-all ${amPm === period ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-sky-600'}`}
                             >
                                 {period}
                             </button>
@@ -333,7 +333,7 @@ const Settings = () => {
                 </div>
             </div>
 
-            <div id="feedback" className="max-w-2xl bg-white dark:bg-slate-900 premium-shadow rounded-2xl p-6 border border-slate-100 dark:border-slate-800 scroll-mt-24 space-y-5">
+            <div id="feedback" className="max-w-2xl bg-white dark:bg-slate-900 premium-shadow rounded-2xl p-4 sm:p-6 border border-slate-100 dark:border-slate-800 scroll-mt-24 space-y-5">
                 <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
                     <FiMessageCircle size={16} className="text-sky-500" />
                     Report an issue
