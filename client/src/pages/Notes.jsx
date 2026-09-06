@@ -111,10 +111,14 @@ const Notes = () => {
 
     // Format selectedDate for title header
     const formatDisplayDate = (dateStr) => {
+        if (!dateStr) return '';
         try {
             const parts = dateStr.split('-');
             const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
-            return dateObj.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const isNarrow = typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches;
+            return dateObj.toLocaleDateString(undefined, isNarrow
+                ? { weekday: 'short', month: 'short', day: 'numeric' }
+                : { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         } catch {
             return dateStr;
         }
@@ -129,7 +133,7 @@ const Notes = () => {
                     <button
                         type="button"
                         onClick={handleSave}
-                        className="px-5 py-2.5 bg-slate-900 dark:bg-slate-800 text-white rounded-xl font-bold text-sm hover:bg-sky-600 transition-all flex items-center justify-center gap-2"
+                        className="w-full sm:w-auto px-5 py-2.5 min-h-[44px] bg-slate-900 dark:bg-slate-800 text-white rounded-xl font-bold text-sm hover:bg-sky-600 transition-all flex items-center justify-center gap-2"
                     >
                         <FiSave size={16} /> Save {saved && <FiCheckCircle className="animate-in zoom-in duration-300" />}
                     </button>
@@ -197,7 +201,7 @@ const Notes = () => {
                 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
                     {/* Date Picker Card */}
-                    <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-4">
+                    <div className="bg-slate-50 dark:bg-slate-900/50 p-4 sm:p-6 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-4">
                         <label className="block text-xs font-black uppercase tracking-widest text-slate-500">Choose Active Date</label>
                         <div className="relative">
                             <input 
@@ -213,7 +217,7 @@ const Notes = () => {
                     </div>
 
                     {/* History/Saved List */}
-                    <div className="lg:col-span-2 bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-4">
+                    <div className="lg:col-span-2 bg-slate-50 dark:bg-slate-900/50 p-4 sm:p-6 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-4">
                         <label className="block text-xs font-black uppercase tracking-widest text-slate-500">Saved Logs Archive</label>
                         {notesList.length === 0 ? (
                             <p className="text-xs font-bold text-slate-400 py-6 text-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl uppercase">No archived logs found.</p>
@@ -244,7 +248,7 @@ const Notes = () => {
                                                     type="button"
                                                     onClick={(e) => handleDeleteLog(note.date, e)}
                                                     title="Delete this log"
-                                                    className={`p-1.5 rounded-lg transition-colors ${isSelected ? 'text-violet-200 hover:text-white hover:bg-violet-700' : 'text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+                                                    className={`p-2.5 min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-lg transition-colors ${isSelected ? 'text-violet-200 hover:text-white hover:bg-violet-700' : 'text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
                                                 >
                                                     <FiTrash2 size={12} />
                                                 </button>
@@ -252,7 +256,7 @@ const Notes = () => {
                                                     type="button"
                                                     onClick={() => openArchiveLog(note)}
                                                     title="Open saved log"
-                                                    className={`p-1.5 rounded-lg transition-all ${isSelected ? 'text-white hover:bg-violet-700' : 'text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-slate-100 dark:hover:bg-slate-800 group-hover/item:translate-x-0.5'}`}
+                                                    className={`p-2.5 min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-lg transition-all ${isSelected ? 'text-white hover:bg-violet-700' : 'text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 hover:bg-slate-100 dark:hover:bg-slate-800 group-hover/item:translate-x-0.5'}`}
                                                 >
                                                     <FiArrowRight size={14} />
                                                 </button>
