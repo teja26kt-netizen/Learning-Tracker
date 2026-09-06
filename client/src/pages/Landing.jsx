@@ -115,7 +115,7 @@ const Landing = () => {
                             <button
                                 type="button"
                                 onClick={handleGetStarted}
-                                className="landing-cta w-auto max-w-[240px] sm:max-w-none px-7 py-2.5 sm:px-10 sm:py-4 text-white rounded-full landing-nav-label text-[10px] sm:text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+                                className="landing-cta w-auto max-w-[280px] sm:max-w-none px-7 py-3 sm:px-10 sm:py-4 text-white rounded-full landing-nav-label text-xs sm:text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.98] min-h-[44px]"
                             >
                                 {user ? 'Go to dashboard' : 'Get started'} <FiArrowRight size={14} className="sm:w-4 sm:h-4" />
                             </button>
@@ -226,7 +226,7 @@ const Landing = () => {
                                                 <button
                                                     type="button"
                                                     onClick={(e) => { e.stopPropagation(); setActiveModule(null); }}
-                                                    className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/15 text-slate-300 flex items-center justify-center shrink-0"
+                                                    className="w-11 h-11 rounded-full bg-white/10 hover:bg-white/15 text-slate-300 flex items-center justify-center shrink-0"
                                                     aria-label="Close preview"
                                                 >
                                                     <FiX size={14} />

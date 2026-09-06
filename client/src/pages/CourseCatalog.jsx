@@ -98,13 +98,13 @@ const CourseCatalog = () => {
     const filteredCourses = courses.filter((c) => category === 'All' || c.category === category);
 
     const categoryFilters = (
-        <div className="flex max-w-full flex-nowrap gap-2.5 sm:gap-3 overflow-x-auto rounded-xl border border-slate-200 bg-slate-50 p-2 sm:p-2.5 [-webkit-overflow-scrolling:touch] scrollbar-none sm:flex-wrap">
+        <div className="flex max-w-full flex-nowrap gap-2.5 sm:gap-3 overflow-x-auto rounded-xl border border-slate-200 bg-slate-50 p-2 sm:p-2.5 [-webkit-overflow-scrolling:touch] scrollbar-none sm:flex-wrap [mask-image:linear-gradient(to_right,black_85%,transparent)] sm:[mask-image:none]">
             {categories.map((cat) => (
                 <button
                     key={cat}
                     type="button"
                     onClick={() => setCategory(cat)}
-                    className={`shrink-0 rounded-lg border px-3.5 py-1.5 text-[10px] font-black transition-all active:scale-95 sm:px-4 sm:py-2 sm:text-xs ${
+                    className={`shrink-0 rounded-lg border px-3.5 py-2.5 min-h-[40px] sm:min-h-[44px] text-[10px] font-black transition-all active:scale-95 sm:px-4 sm:py-2 sm:text-xs ${
                         category === cat
                             ? 'border-sky-500 bg-sky-600 text-white shadow-md shadow-sky-500/20'
                             : 'border-slate-200 bg-white text-slate-500 hover:border-sky-300 hover:text-sky-600'

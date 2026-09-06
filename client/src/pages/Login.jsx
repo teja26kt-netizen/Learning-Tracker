@@ -201,7 +201,7 @@ const Login = () => {
                                     setOtp('');
                                     setError('');
                                 }}
-                                className="w-full text-sm font-semibold text-slate-500 hover:text-violet-600"
+                                className="w-full py-3 min-h-[44px] text-sm font-semibold text-slate-500 hover:text-violet-600"
                             >
                                 Change email
                             </button>
